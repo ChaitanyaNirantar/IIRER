@@ -1,8 +1,8 @@
 package org.example.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 
 @Entity
@@ -13,91 +13,85 @@ public class CIEEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long customer_id;
+    private Long customerId;
 
-    private boolean CIEEmployment;
+    private boolean cieEmployment;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate Employment_Start_Date;
+    private LocalDate employmentStartDate;
 
-    private String JobTitle;
+    private String vrService;
 
-    private String Job_Description;
+    private String jobDescription;
 
-    private Long hours_per_week;
+    private Long hoursPerWeek;
 
-    private Long pay_per_hour;
+    private Long payPerHour;
 
-    // Getter and Setter for id
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    // Getter and Setter for customer_id
-    public Long getCustomer_id() {
-        return customer_id;
+    @JsonProperty("customer_id")
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
-    public void setCustomer_id(Long customer_id) {
-        this.customer_id = customer_id;
+    public boolean isCieEmployment() {
+        return cieEmployment;
     }
 
-    // Getter and Setter for CIEEmployment
-    public boolean isCIEEmployment() {
-        return CIEEmployment;
+    @JsonProperty("CIEEmployment")
+    public void setCieEmployment(boolean cieEmployment) {
+        this.cieEmployment = cieEmployment;
     }
 
-    public void setCIEEmployment(boolean CIEEmployment) {
-        this.CIEEmployment = CIEEmployment;
+    public LocalDate getEmploymentStartDate() {
+        return employmentStartDate;
     }
 
-    // Getter and Setter for Employment_Start_Date
-    public LocalDate getEmployment_Start_Date() {
-        return Employment_Start_Date;
+    @JsonProperty("Employment_Start_Date")
+    public void setEmploymentStartDate(LocalDate employmentStartDate) {
+        this.employmentStartDate = employmentStartDate;
     }
 
-    public void setEmployment_Start_Date(LocalDate employment_Start_Date) {
-        Employment_Start_Date = employment_Start_Date;
+    public String getVrService() {
+        return vrService;
     }
 
-    // Getter and Setter for JobTitle
-    public String getJobTitle() {
-        return JobTitle;
+    @JsonProperty("VR_Service")
+    public void setVrService(String vrService) {
+        this.vrService = vrService;
     }
 
-    public void setJobTitle(String jobTitle) {
-        JobTitle = jobTitle;
+    public String getJobDescription() {
+        return jobDescription;
     }
 
-    // Getter and Setter for Job_Description
-    public String getJob_Description() {
-        return Job_Description;
+    @JsonProperty("Job_Description")
+    public void setJobDescription(String jobDescription) {
+        this.jobDescription = jobDescription;
     }
 
-    public void setJob_Description(String job_Description) {
-        Job_Description = job_Description;
+    public Long getHoursPerWeek() {
+        return hoursPerWeek;
     }
 
-    // Getter and Setter for hours_per_week
-    public Long getHours_per_week() {
-        return hours_per_week;
+    @JsonProperty("hours_per_week")
+    public void setHoursPerWeek(Long hoursPerWeek) {
+        this.hoursPerWeek = hoursPerWeek;
     }
 
-    public void setHours_per_week(Long hours_per_week) {
-        this.hours_per_week = hours_per_week;
+    public Long getPayPerHour() {
+        return payPerHour;
     }
 
-    // Getter and Setter for pay_per_hour
-    public Long getPay_per_hour() {
-        return pay_per_hour;
+    @JsonProperty("pay_per_hour")
+    public void setPayPerHour(Long payPerHour) {
+        this.payPerHour = payPerHour;
     }
-
-    public void setPay_per_hour(Long pay_per_hour) {
-        this.pay_per_hour = pay_per_hour;
-    }
-
 }
