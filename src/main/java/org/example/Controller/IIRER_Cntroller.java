@@ -69,7 +69,10 @@ public class IIRER_Cntroller {
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
         LoginRequestDTO user = iirerService.findByEmail(request.getEmail());
 
-        if (user == null || !user.getPassword().equals(request.getPassword())) {
+        if (user == null) {
+            return ResponseEntity.status(401).body("Invalid credentials");
+        }
+        if (!user.getPassword().equals(request.getPassword())) {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
 
