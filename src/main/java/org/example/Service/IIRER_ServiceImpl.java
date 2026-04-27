@@ -96,13 +96,16 @@ public class IIRER_ServiceImpl  implements IIRER_Sevice {
     public LoginRequestDTO findByEmail(String email) {
         Optional<SignupEntity> optionalUser = signupRepo.findByEmail(email);
 
-        SignupEntity user = optionalUser
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        if (optionalUser.isEmpty()) {
+            return null;
+        }
+
+        SignupEntity user = optionalUser.get();
 
         LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
         loginRequestDTO.setCustomerID(user.getId());
         loginRequestDTO.setEmail(user.getEmail());
-        loginRequestDTO.setPassword(user.getPassword());// adjust getter name if needed
+        loginRequestDTO.setPassword(user.getPassword());
 
         return loginRequestDTO;
     }
