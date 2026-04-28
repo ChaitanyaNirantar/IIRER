@@ -1,0 +1,37 @@
+name: Deploy IIRER Backend to AWS
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build JAR
+        run: mvn clean package -DskipTests
+
+      - name: Copy JAR to root
+        run: cp target/IIRER-1.0-SNAPSHOT.jar IIRER-1.0-SNAPSHOT.jar
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: iirer-backend
+          environment_name: iirer-backend-env
+          region: us-east-2
+          version_label: iirer-${{ github.sha }}
+          deployment_package: IIRER-1.0-SNAPSHOT.jar
+          use_existing_version_if_available: true

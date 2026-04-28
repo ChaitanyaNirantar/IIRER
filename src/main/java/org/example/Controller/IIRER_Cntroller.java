@@ -72,9 +72,6 @@ public class IIRER_Cntroller {
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
         LoginRequestDTO user = iirerService.findByEmail(request.getEmail());
 
-        if (user == null || !user.getPassword().equals(request.getPassword())) {
-
-        }
         if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             // password correct
             String token = jwtService.generateToken(user.getEmail(), user.getCustomerID());
@@ -82,10 +79,10 @@ public class IIRER_Cntroller {
             return ResponseEntity.ok(new AuthResponse(token, user.getEmail()));
         }
         else{
+  
             return ResponseEntity.status(401).body("Invalid credentials");
         }
-
-
+        
     }
 
 //    @PostMapping("/v2/newvrservice")
