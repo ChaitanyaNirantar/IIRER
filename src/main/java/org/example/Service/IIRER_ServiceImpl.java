@@ -3,6 +3,7 @@ package org.example.Service;
 import org.example.Entity.*;
 import org.example.Repository.*;
 //importorg.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,10 +20,11 @@ public class IIRER_ServiceImpl  implements IIRER_Sevice {
     private final CIERepo cieRepo;
     private final DRSRepo drsRepo;
     private final PDFRepo pdfRepo;
+    private final PasswordEncoder passwordEncoder;
 
     //private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public IIRER_ServiceImpl(IIRERRepo iirerRepo, SignupRepo signupRepo, VRServiceRepo vrServiceRepo, CIERepo cieRepo, DRSRepo drsRepo, PDFRepo pdfRepo) {
+    public IIRER_ServiceImpl(IIRERRepo iirerRepo, SignupRepo signupRepo, VRServiceRepo vrServiceRepo, CIERepo cieRepo, DRSRepo drsRepo, PDFRepo pdfRepo, PasswordEncoder passwordEncoder) {
         this.iirerRepo = iirerRepo;
         this.signupRepo = signupRepo;
         this.vrServiceRepo = vrServiceRepo;
@@ -31,6 +33,7 @@ public class IIRER_ServiceImpl  implements IIRER_Sevice {
 
 
         this.pdfRepo = pdfRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -44,8 +47,11 @@ public class IIRER_ServiceImpl  implements IIRER_Sevice {
         signupEntity.setName(signupRequest.getName());
         signupEntity.setEmail(signupRequest.getEmail());
 
+        String encryptedPassword = passwordEncoder.encode(signupRequest.getPassword());
+        signupEntity.setPassword(encryptedPassword);
+
         // Encrypt password
-        signupEntity.setPassword(signupRequest.getPassword());
+        //signupEntity.setPassword(signupRequest.getPassword());
 
         signupRepo.save(signupEntity);
 

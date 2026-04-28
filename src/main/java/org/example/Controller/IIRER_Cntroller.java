@@ -9,6 +9,7 @@ import org.example.Service.JWTService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,10 +20,12 @@ import java.util.List;
 public class IIRER_Cntroller {
     private final IIRER_Sevice iirerService;
     private final JWTService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
-    public IIRER_Cntroller(IIRER_Sevice iirerService, JWTService jwtService) {
+    public IIRER_Cntroller(IIRER_Sevice iirerService, JWTService jwtService, PasswordEncoder passwordEncoder) {
         this.iirerService = iirerService;
         this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping
@@ -70,12 +73,19 @@ public class IIRER_Cntroller {
         LoginRequestDTO user = iirerService.findByEmail(request.getEmail());
 
         if (user == null || !user.getPassword().equals(request.getPassword())) {
+
+        }
+        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            // password correct
+            String token = jwtService.generateToken(user.getEmail(), user.getCustomerID());
+
+            return ResponseEntity.ok(new AuthResponse(token, user.getEmail()));
+        }
+        else{
             return ResponseEntity.status(401).body("Invalid credentials");
         }
 
-        String token = jwtService.generateToken(user.getEmail(), user.getCustomerID());
 
-        return ResponseEntity.ok(new AuthResponse(token, user.getEmail()));
     }
 
 //    @PostMapping("/v2/newvrservice")
