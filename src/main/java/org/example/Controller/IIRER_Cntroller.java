@@ -84,6 +84,39 @@ public class IIRER_Cntroller {
         }
         
     }
+    @PostMapping("/v1/login")
+    public ResponseEntity<?> loginn(@RequestBody LoginRequestDTO request) {
+        LoginRequestDTO user = iirerService.findByEmail(request.getEmail());
+
+        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401).body("Invalid credentials");
+        }
+
+        String otp = String.valueOf((int)(Math.random() * 900000) + 100000);
+
+        iirerService.generateAndSaveOtp(user.getEmail());
+
+       // emailService.sendOtpEmail(user.getEmail(), otp);
+
+        return ResponseEntity.ok("OTP sent to your email");
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody OTPRequest request) {
+
+        boolean isValid = iirerService.verifyOtp(request.getEmail(), request.getOtp());
+
+        if (!isValid) {
+            return ResponseEntity.status(401).body("Invalid or expired OTP");
+        }
+
+        SignupEntity user = iirerService.findSignupUserByEmail(request.getEmail());
+
+        String token = jwtService.generateToken(user.getEmail(), user.getId());
+
+        return ResponseEntity.ok(new AuthResponse(token, user.getEmail()));
+    }
+
 
 //    @PostMapping("/v2/newvrservice")
 //    public VR_Entity vrservices(

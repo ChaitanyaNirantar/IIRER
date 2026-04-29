@@ -3,6 +3,7 @@ package org.example.Service;
 import org.example.Entity.*;
 import org.example.Repository.*;
 //importorg.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class IIRER_ServiceImpl  implements IIRER_Sevice {
@@ -21,6 +23,8 @@ public class IIRER_ServiceImpl  implements IIRER_Sevice {
     private final DRSRepo drsRepo;
     private final PDFRepo pdfRepo;
     private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private EmailService emailService;
 
     //private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -115,6 +119,52 @@ public class IIRER_ServiceImpl  implements IIRER_Sevice {
 
         return loginRequestDTO;
     }
+    public String generateAndSaveOtp(String email) {
+
+
+
+        SignupEntity user = signupRepo.findByEmail(email).orElse(null);
+
+        if (user == null) {
+            return null;
+        }
+
+        String otp = String.valueOf(100000 + new Random().nextInt(900000));
+
+        user.setOtpCode(otp);
+        user.setOtpExpiresAt(LocalDateTime.now().plusMinutes(5));
+
+        signupRepo.save(user);
+
+        emailService.sendOtpEmail(user.getEmail(), otp);
+
+        return otp;
+    }
+    public boolean verifyOtp(String email, String otp) {
+        SignupEntity user = signupRepo.findByEmail(email).orElse(null);
+
+        if (user == null) {
+            return false;
+        }
+
+        if (user.getOtpCode() == null || user.getOtpExpiresAt() == null) {
+            return false;
+        }
+
+        if (LocalDateTime.now().isAfter(user.getOtpExpiresAt())) {
+            return false;
+        }
+
+        if (!user.getOtpCode().equals(otp)) {
+            return false;
+        }
+
+        user.setOtpCode(null);
+        user.setOtpExpiresAt(null);
+        signupRepo.save(user);
+
+        return true;
+    }
 
     @Override
     public PdfEntity uploadPdf(MultipartFile file) throws IOException {
@@ -140,6 +190,9 @@ public class IIRER_ServiceImpl  implements IIRER_Sevice {
     public PdfEntity getPdfById(Long id) {
         return pdfRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("PDF not found with id: " + id));
+    }
+    public SignupEntity findSignupUserByEmail(String email) {
+        return signupRepo.findByEmail(email).orElse(null);
     }
 }
 

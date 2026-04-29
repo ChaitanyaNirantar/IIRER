@@ -10,6 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "Signup")
 public class SignupEntity {
@@ -23,6 +25,8 @@ public class SignupEntity {
     private String email;
 
     private String password;
+    private String otpCode;
+    private LocalDateTime otpExpiresAt;
 
     // Getters and Setters
 
@@ -56,5 +60,21 @@ public class SignupEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getOtpCode() {
+        return otpCode;
+    }
+
+    public void setOtpCode(String otpCode) {
+        this.otpCode = otpCode;
+    }
+
+    public LocalDateTime getOtpExpiresAt() {
+        return otpExpiresAt;
+    }
+
+    public void setOtpExpiresAt(LocalDateTime otpExpiresAt) {
+        this.otpExpiresAt = otpExpiresAt;
     }
 }

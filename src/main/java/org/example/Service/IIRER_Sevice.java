@@ -29,6 +29,12 @@ public interface IIRER_Sevice {
 
     PdfEntity getPdfById(Long id);
 
+    String generateAndSaveOtp(String email);
+
+    boolean verifyOtp(String email, String otp);
+
+    SignupEntity findSignupUserByEmail(String email);
+
 
 
 
